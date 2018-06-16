@@ -8,34 +8,51 @@ namespace iServiceApi.Models
 {
     public class Usuario
     {
+        public Usuario(long Id, int PermissionLevel, int IsTecnico, string Email, string Nome, string Telefone) {
+            this.Id = Id;
+            this.PermissionLevel = PermissionLevel;
+            this.Email = Email;
+            this.Nome = Nome;
+            this.Telefone = Telefone;
+        }
+
         [Key]
-        private long Id { get; set; }
+        public long Id { get; set; }
 
-        private int PermissionLevel { get; set; }
+        public int PermissionLevel { get; set; }
 
-        private int IsTecnico { get; set; }
+        public int IsTecnico { get; set; }
 
-        private String Cpf { get; set; }
+        public string Cpf { get; set; }
 
-        private String Email { get; set; }
+        public string Email { get; set; }
 
-        private String Senha { get; set; }
+        public string Senha { get; set; }
 
-        private String Nome { get; set; }
+        public string Nome { get; set; }
 
-        private String Telefone { get; set; }
+        public string Telefone { get; set; }
 
-        private String Estado { get; set; }
+        public string Estado { get; set; }
 
-        private String Cidade { get; set; }
+        public string Cidade { get; set; }
 
-        private String Cep { get; set; }
+        public string Cep { get; set; }
 
-        private String Bairro { get; set; }
+        public string Bairro { get; set; }
 
-        private String Rua { get; set; }
+        public string Rua { get; set; }
 
-        private String Complemento { get; set; }
+        public string Complemento { get; set; }
+
+        public string HashAuth { get; set; }
+
+        public class TokenConfigurations
+        {
+            public string Audience { get; set; }
+            public string Issuer { get; set; }
+            public int Seconds { get; set; }
+        }
 
     }
 }
