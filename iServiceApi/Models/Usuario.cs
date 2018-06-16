@@ -8,16 +8,9 @@ namespace iServiceApi.Models
 {
     public class Usuario
     {
-        public Usuario(long Id, int PermissionLevel, int IsTecnico, string Email, string Nome, string Telefone) {
-            this.Id = Id;
-            this.PermissionLevel = PermissionLevel;
-            this.Email = Email;
-            this.Nome = Nome;
-            this.Telefone = Telefone;
-        }
-
+       
         [Key]
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         public int PermissionLevel { get; set; }
 
