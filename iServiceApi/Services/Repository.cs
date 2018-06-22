@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace iServiceApi.Services
 {
@@ -34,17 +35,27 @@ namespace iServiceApi.Services
             return _dbSet.Find(id);
         }
 
-        public TEntity Insert(TEntity entity)
+        public async Task<bool> Insert(TEntity entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _context.Add(entity);
+                await _context.SaveChangesAsync();
+
+                return true;
+
+            }catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
         }
 
-        public bool Update(TEntity updated)
+        public async Task<bool> Update(TEntity updated)
         {
             try
             {
                 _context.Update(updated);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return true;
             }
@@ -79,7 +90,7 @@ namespace iServiceApi.Services
         }
 
 
-        public async System.Threading.Tasks.Task<bool> UpdateAsync(TEntity updated)
+        public async Task<bool> UpdateAsync(TEntity updated)
         {
             try
             {
@@ -92,6 +103,11 @@ namespace iServiceApi.Services
             {
                 throw;
             }
+        }
+
+        bool IRepository<TEntity>.Update(TEntity updated)
+        {
+            throw new NotImplementedException();
         }
 
         TEntity IRepository<TEntity>.SaveChangesAsync()

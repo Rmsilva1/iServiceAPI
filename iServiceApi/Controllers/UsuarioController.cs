@@ -69,24 +69,30 @@ namespace iServiceApi.Controllers
             return NoContent();
         }
 
-        //// POST: api/Usuarios
-        //[HttpPost]
-        //public async Task<IActionResult> PostUsuario([FromBody] Usuario usuario)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-        //    if (usuario.HashAuth == null)
-        //    {
-        //        usuario.HashAuth = Guid.NewGuid().ToString();
-        //    }
+        // POST: api/Usuarios
+        [HttpPost]
+        public async Task<IActionResult> PostUsuario([FromBody] Usuario usuario)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (usuario.HashAuth == null)
+            {
+                usuario.HashAuth = Guid.NewGuid().ToString();
+            }
 
-        //    _repository.Usuarios.Add(usuario);
-        //    await _repository.SaveChangesAsync();
+            try
+            {
+                await _repository.Insert(usuario);
+            }
+            catch (Exception)
+            {
 
-        //    return CreatedAtAction("GetUsuario", new { id = usuario.Id }, usuario);
-        //}
+            }
+
+            return CreatedAtAction("GetUsuario", new { id = usuario.Id }, usuario);
+        }
 
         //// DELETE: api/Usuarios/5
         //[HttpDelete("{id}")]
