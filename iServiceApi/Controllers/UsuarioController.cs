@@ -49,79 +49,69 @@ namespace iServiceApi.Controllers
         public async Task<IActionResult> PutUsuario([FromRoute] int id, [FromBody] Usuario usuario)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             if (id != usuario.Id)
-            {
                 return BadRequest();
-            }
-
-            _repository.Update(usuario);
 
             try
             {
-                await _repository.SaveChangesAsync();
+                await _repository.UpdateAsync(usuario);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
-                if (!UsuarioExists(id))
-                {
+                if (!_repository.Exists(id))
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
 
             return NoContent();
         }
 
-        // POST: api/Usuarios
-        [HttpPost]
-        public async Task<IActionResult> PostUsuario([FromBody] Usuario usuario)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            if (usuario.HashAuth == null)
-            {
-                usuario.HashAuth = Guid.NewGuid().ToString();
-            }
+        //// POST: api/Usuarios
+        //[HttpPost]
+        //public async Task<IActionResult> PostUsuario([FromBody] Usuario usuario)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+        //    if (usuario.HashAuth == null)
+        //    {
+        //        usuario.HashAuth = Guid.NewGuid().ToString();
+        //    }
 
-            _repository.Usuarios.Add(usuario);
-            await _repository.SaveChangesAsync();
+        //    _repository.Usuarios.Add(usuario);
+        //    await _repository.SaveChangesAsync();
 
-            return CreatedAtAction("GetUsuario", new { id = usuario.Id }, usuario);
-        }
+        //    return CreatedAtAction("GetUsuario", new { id = usuario.Id }, usuario);
+        //}
 
-        // DELETE: api/Usuarios/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUsuario([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// DELETE: api/Usuarios/5
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteUsuario([FromRoute] int id)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            var usuario = await _repository.Usuarios.SingleOrDefaultAsync(m => m.Id == id);
-            if (usuario == null)
-            {
-                return NotFound();
-            }
+        //    var usuario = await _repository.Usuarios.SingleOrDefaultAsync(m => m.Id == id);
+        //    if (usuario == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _repository.Usuarios.Remove(usuario);
-            await _repository.SaveChangesAsync();
+        //    _repository.Usuarios.Remove(usuario);
+        //    await _repository.SaveChangesAsync();
 
-            return Ok(usuario);
-        }
+        //    return Ok(usuario);
+        //}
 
-        private bool UsuarioExists(int id)
-        {
-            return _repository.Usuarios.Any(e => e.Id == id);
-        }
+        //private bool UsuarioExists(int id)
+        //{
+        //    return _repository.Usuarios.Any(e => e.Id == id);
+        //}
     }
 }

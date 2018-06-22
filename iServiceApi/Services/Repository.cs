@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -8,7 +9,7 @@ namespace iServiceApi.Services
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         private readonly Models.IServiceContext _context;
-        private readonly Microsoft.EntityFrameworkCore.DbSet<TEntity> _dbSet;
+        private readonly DbSet<TEntity> _dbSet;
 
         public Repository(Models.IServiceContext context)
         {
@@ -30,7 +31,7 @@ namespace iServiceApi.Services
 
         public TEntity Get(object id)
         {
-            return  _dbSet.Find(id);
+            return _dbSet.Find(id);
         }
 
         public TEntity Insert(TEntity entity)
@@ -40,7 +41,17 @@ namespace iServiceApi.Services
 
         public bool Update(TEntity updated)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _context.Update(updated);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
         }
 
         public bool Remove(TEntity remove)
@@ -48,9 +59,44 @@ namespace iServiceApi.Services
             throw new NotImplementedException();
         }
 
-        public void saveChangesAsync(TEntity entity)
+        public async void SaveChangesAsync()
         {
-            _dbSet.SaveChangesAsync(entity);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                {
+                    throw;
+                }
+            }
+        }
+
+        public bool Exists(object id)
+        {
+            return Get(id) != null;
+        }
+
+
+        public async System.Threading.Tasks.Task<bool> UpdateAsync(TEntity updated)
+        {
+            try
+            {
+                _context.Update(updated);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+        }
+
+        TEntity IRepository<TEntity>.SaveChangesAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

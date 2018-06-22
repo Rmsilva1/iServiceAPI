@@ -8,6 +8,8 @@
         Tentity Insert(Tentity entity);
         bool Update(Tentity updated);
         bool Remove(Tentity remove);
-
+        Tentity SaveChangesAsync();
+        bool Exists(object id);
+        System.Threading.Tasks.Task<bool> UpdateAsync(Tentity updated);
     }
 }
