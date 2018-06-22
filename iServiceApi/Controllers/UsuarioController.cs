@@ -12,18 +12,18 @@ namespace iServiceApi.Controllers
     [Route("api/Usuarios")]
     public class UsuarioController : Controller
     {
-        private readonly IServiceContext _context;
+        private readonly Services.IRepository<Usuario> _repository;
 
-        public UsuarioController(IServiceContext context)
+        public UsuarioController(Services.IRepository<Usuario> repo)
         {
-            _context = context;
+            _repository = repo;
         }
 
         // GET: api/Usuarios
         [HttpGet]
         public IEnumerable<Usuario> GetUsuario()
         {
-            return _context.Usuarios;
+            return _repository.GetAll();
         }
 
         // GET: api/Usuarios/5
@@ -35,13 +35,12 @@ namespace iServiceApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var usuario = await _context.Usuarios.SingleOrDefaultAsync(m => m.Id == id);
+            var usuario = _repository.Get(id);
 
             if (usuario == null)
             {
                 return NotFound();
             }
-
             return Ok(usuario);
         }
 
@@ -59,11 +58,11 @@ namespace iServiceApi.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(usuario).State = EntityState.Modified;
+            _repository.Update(usuario);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _repository.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -93,8 +92,8 @@ namespace iServiceApi.Controllers
                 usuario.HashAuth = Guid.NewGuid().ToString();
             }
 
-            _context.Usuarios.Add(usuario);
-            await _context.SaveChangesAsync();
+            _repository.Usuarios.Add(usuario);
+            await _repository.SaveChangesAsync();
 
             return CreatedAtAction("GetUsuario", new { id = usuario.Id }, usuario);
         }
@@ -108,21 +107,21 @@ namespace iServiceApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var usuario = await _context.Usuarios.SingleOrDefaultAsync(m => m.Id == id);
+            var usuario = await _repository.Usuarios.SingleOrDefaultAsync(m => m.Id == id);
             if (usuario == null)
             {
                 return NotFound();
             }
 
-            _context.Usuarios.Remove(usuario);
-            await _context.SaveChangesAsync();
+            _repository.Usuarios.Remove(usuario);
+            await _repository.SaveChangesAsync();
 
             return Ok(usuario);
         }
 
         private bool UsuarioExists(int id)
         {
-            return _context.Usuarios.Any(e => e.Id == id);
+            return _repository.Usuarios.Any(e => e.Id == id);
         }
     }
 }

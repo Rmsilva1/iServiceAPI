@@ -63,6 +63,8 @@ namespace iServiceApi
 
                 );
             services.AddMvc();
+
+            services.AddTransient(typeof(Services.IRepository<>), typeof(Services.Repository<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
