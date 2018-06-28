@@ -94,30 +94,28 @@ namespace iServiceApi.Controllers
             return CreatedAtAction("GetUsuario", new { id = usuario.Id }, usuario);
         }
 
-        //// DELETE: api/Usuarios/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteUsuario([FromRoute] int id)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        // DELETE: api/Usuarios/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUsuario([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        //    var usuario = await _repository.Usuarios.SingleOrDefaultAsync(m => m.Id == id);
-        //    if (usuario == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _repository.Usuarios.Remove(usuario);
-        //    await _repository.SaveChangesAsync();
-
-        //    return Ok(usuario);
-        //}
-
-        //private bool UsuarioExists(int id)
-        //{
-        //    return _repository.Usuarios.Any(e => e.Id == id);
-        //}
+            try
+            {
+                await _repository.DeleteAsync(id);
+            }
+            catch (Exception)
+            {
+                if (!_repository.Exists(id))
+                    return NotFound();
+                else
+                    throw;
+            }
+           
+            return Ok(id);
+        }
     }
 }

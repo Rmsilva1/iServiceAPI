@@ -114,5 +114,23 @@ namespace iServiceApi.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task<bool> DeleteAsync(int Id)
+        {
+            try
+            {
+                var usuario = await _context.Usuarios.SingleOrDefaultAsync(m => m.Id == Id);
+                             
+                _context.Remove(usuario);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+        }
+
     }
 }

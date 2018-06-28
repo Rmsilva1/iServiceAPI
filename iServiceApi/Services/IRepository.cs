@@ -13,5 +13,8 @@ namespace iServiceApi.Services
         Tentity SaveChangesAsync();
         bool Exists(object id);
         Task<bool> UpdateAsync(Tentity updated);
+
+        Task<bool> DeleteAsync(int id);
+
     }
 }
